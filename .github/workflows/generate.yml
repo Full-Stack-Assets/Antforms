@@ -24,6 +24,9 @@ jobs:
 
       - run: npm ci
 
+      - name: Install Vercel CLI
+        run: npm i -g vercel
+
       - name: Run pipeline
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
