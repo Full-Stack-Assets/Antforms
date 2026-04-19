@@ -3,10 +3,17 @@ import { defineConfig } from 'tinacms';
 // Tina v2 config. Run `pnpm dev` to start the editor at /admin/index.html.
 // For self-hosted mode (no Tina Cloud), leave clientId/token blank and Tina
 // will use the local filesystem directly.
+const isCloudEnabled = !!(process.env.NEXT_PUBLIC_TINA_CLIENT_ID && process.env.TINA_TOKEN);
+
 export default defineConfig({
   branch: process.env.GITHUB_BRANCH ?? 'main',
-  clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID ?? '',
-  token: process.env.TINA_TOKEN ?? '',
+  clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID,
+  token: process.env.TINA_TOKEN,
+
+  // Skip client SDK generation when running in self-hosted mode
+  client: {
+    skip: !isCloudEnabled,
+  },
 
   build: {
     outputFolder: 'admin',
