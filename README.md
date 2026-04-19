@@ -45,6 +45,7 @@ cp .env.example .env.local
 | `GROQ_API_KEY` | https://console.groq.com/keys | Generous rate limits, ~30 RPM on llama-3.3-70b |
 | `BRAVE_API_KEY` | https://api.search.brave.com/app/keys | 2,000 queries/month on the free plan |
 | `PEXELS_API_KEY` | https://www.pexels.com/api/new/ | Unlimited for dev use |
+| `REDDIT_CLIENT_ID` & `REDDIT_CLIENT_SECRET` | https://www.reddit.com/prefs/apps | Free — create a "script" app for OAuth2 access |
 | `GITHUB_TOKEN` | github.com → Settings → Developer settings → Fine-grained PAT | Scope: **Contents: Read/Write** on the blog repo only |
 | `CRON_SECRET` | `openssl rand -hex 32` | — |
 
