@@ -1,9 +1,9 @@
-name: Daily Post Generation
+name: Post Generation
 
 on:
   schedule:
-    # 12:00 UTC = 7am ET during DST, 8am ET standard time
-    - cron: '0 12 * * *'
+    # Every 20 minutes
+    - cron: '*/20 * * * *'
   workflow_dispatch: # manual trigger button in GitHub UI
 
 permissions:
