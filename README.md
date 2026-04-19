@@ -50,6 +50,8 @@ cp .env.example .env.local
 
 Fill them into `.env.local` along with `GITHUB_OWNER` / `GITHUB_REPO` / `GITHUB_BRANCH`.
 
+> **⚠️ Security Note:** Never commit `.env.local` or any file containing real API keys to version control. The `.env.local` file is already in `.gitignore` to prevent accidental commits. Always use `.env.example` as a template with placeholder values only.
+
 ### 4. Test locally
 
 ```bash
