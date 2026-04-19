@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "tinacms dev -c \"next dev\"",
-    "build": "tinacms build && next build",
+    "build": "bash scripts/build.sh",
     "start": "next start",
     "lint": "next lint",
     "generate": "tsx scripts/run-local.ts",
