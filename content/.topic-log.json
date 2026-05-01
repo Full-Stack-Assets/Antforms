@@ -69,6 +69,13 @@
       "url": "https://dpa-international.com/general-news/urn:newsml:dpa.com:20090101:260430-930-14717/",
       "publishedAt": "2026-04-30T17:05:46.401Z",
       "signature": "b4446835d702dfe6"
+    },
+    {
+      "slug": "grok-4-3-beta-launch",
+      "title": "Grok 4.3",
+      "url": "https://docs.x.ai/developers/models/grok-4.3",
+      "publishedAt": "2026-05-01T15:37:31.313Z",
+      "signature": "739bd02962924373"
     }
   ]
 }
