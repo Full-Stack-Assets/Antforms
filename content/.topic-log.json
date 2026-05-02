@@ -76,6 +76,13 @@
       "url": "https://docs.x.ai/developers/models/grok-4.3",
       "publishedAt": "2026-05-01T15:37:31.313Z",
       "signature": "739bd02962924373"
+    },
+    {
+      "slug": "ti-84-evo-graphing-calculator",
+      "title": "Ti-84 Evo",
+      "url": "https://education.ti.com/en/products/calculators/graphing-calculators/ti-84-evo",
+      "publishedAt": "2026-05-02T14:41:29.511Z",
+      "signature": "f6ffc3e8595968c1"
     }
   ]
 }
