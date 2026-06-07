@@ -18,6 +18,8 @@ const config: Config = {
         accent: '#ff5b1f',
         muted: '#6b6558',
         rule: '#1a1a1a',
+        // Intermediate zinc shade used by the VaporLoop demo (/vaporloop)
+        'zinc-850': '#1f1f23',
       },
       typography: {
         DEFAULT: {
