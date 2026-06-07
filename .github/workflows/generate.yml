@@ -40,7 +40,25 @@ jobs:
           git add content/
           if git diff --cached --quiet; then
             echo "No new post generated — nothing to commit."
-          else
-            git commit -m "post: $(date -u +%Y-%m-%d) daily dispatch"
-            git push
+            exit 0
           fi
+
+          git commit -m "post: $(date -u +%Y-%m-%d) daily dispatch"
+
+          # The remote may have advanced since checkout (concurrent runs,
+          # re-runs on a stale SHA, or other merges to main). Rebase onto the
+          # latest remote state and retry the push so a moved ref doesn't fail
+          # the whole run.
+          branch="${GITHUB_REF_NAME:-main}"
+          for attempt in 1 2 3 4 5; do
+            if git push origin "HEAD:${branch}"; then
+              echo "Pushed on attempt ${attempt}."
+              exit 0
+            fi
+            echo "Push rejected (attempt ${attempt}); rebasing onto origin/${branch} and retrying..."
+            git fetch origin "${branch}"
+            git rebase "origin/${branch}"
+          done
+
+          echo "Failed to push after multiple attempts." >&2
+          exit 1
