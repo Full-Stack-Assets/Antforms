@@ -363,6 +363,13 @@
       "url": "https://www.normaltech.ai/p/why-ai-hasnt-replaced-software-engineers",
       "publishedAt": "2026-06-11T16:05:04.134Z",
       "signature": "c56acd2cf3ece5f6"
+    },
+    {
+      "slug": "claude-fable-proactive-coding",
+      "title": "Claude Fable is relentlessly proactive",
+      "url": "https://simonwillison.net/2026/Jun/11/fable-is-relentlessly-proactive/",
+      "publishedAt": "2026-06-12T15:17:35.095Z",
+      "signature": "05cbf5f52837290f"
     }
   ]
 }
