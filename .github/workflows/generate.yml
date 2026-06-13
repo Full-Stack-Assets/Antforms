@@ -1,10 +1,17 @@
-name: Daily Post Generation
+name: Hourly Post Generation
 
 on:
   schedule:
-    # 12:00 UTC = 7am ET during DST, 8am ET standard time
-    - cron: '0 12 * * *'
+    # Top of every hour (UTC). GitHub may delay scheduled runs under load,
+    # so the actual tick can drift a few minutes past the hour.
+    - cron: '0 * * * *'
   workflow_dispatch: # manual trigger button in GitHub UI
+
+# Don't let a slow run overlap the next hourly tick. Newer runs wait for the
+# in-flight one rather than racing it to commit/push.
+concurrency:
+  group: hourly-post-generation
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -43,7 +50,7 @@ jobs:
             exit 0
           fi
 
-          git commit -m "post: $(date -u +%Y-%m-%d) daily dispatch"
+          git commit -m "post: $(date -u +%Y-%m-%dT%H:00Z) hourly dispatch"
 
           # The remote may have advanced since checkout (concurrent runs,
           # re-runs on a stale SHA, or other merges to main). Rebase onto the

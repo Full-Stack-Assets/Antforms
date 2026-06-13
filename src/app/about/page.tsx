@@ -13,11 +13,11 @@ export default function AboutPage() {
       <div className="prose-editorial">
         <p>
           <strong>Wire and Logic</strong> is an experiment in what happens when you point a small,
-          opinionated pipeline at the firehose of tech news and let it write one post a day.
+          opinionated pipeline at the firehose of tech news and let it write a fresh post every hour.
         </p>
 
         <h2>The pipeline</h2>
-        <p>Every morning at 7am, a scheduled function does five things:</p>
+        <p>At the top of every hour, a scheduled function does five things:</p>
         <ol>
           <li><strong>Gather.</strong> Pulls headlines from Reddit, Hacker News, DEV.to, a handful of RSS feeds, YouTube, and Brave News.</li>
           <li><strong>Score.</strong> Each candidate gets a composite score — popularity, engagement, recency — and anything that's already been covered is filtered out.</li>

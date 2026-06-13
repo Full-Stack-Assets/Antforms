@@ -1,6 +1,6 @@
 # Wire and Logic
 
-A self-hosted, zero-cost trend blog. One scheduled function runs daily, picks the highest-signal story from six sources, researches it, writes a structured MDX post, and commits it to GitHub. The Next.js site auto-deploys.
+A self-hosted, zero-cost trend blog. A scheduled job runs every hour, picks the highest-signal story from six sources, researches it, writes a structured MDX post, and commits it to GitHub. The Next.js site auto-deploys.
 
 **Stack:** Next.js 15 · TinaCMS · Groq (free tier) · Brave Search · Pexels · GitHub Contents API · Vercel/Cloudflare.
 
@@ -71,29 +71,29 @@ Open http://localhost:3000. The seed post is visible out of the box; new posts s
 
 ## Deploy
 
-### Option A — Vercel (easiest)
+### Scheduling — GitHub Actions (the hourly tick)
+
+The hourly schedule lives in **`.github/workflows/generate.yml`**, which runs at the top of every hour (`cron: '0 * * * *'`), executes the pipeline with `npx tsx scripts/run-local.ts`, and commits any new post straight to the repo. No serverless CPU limits, free logs, and the push triggers your host to redeploy. This is the scheduler — your host below is just for serving the site.
+
+Add the pipeline secrets (`GROQ_API_KEY`, `BRAVE_API_KEY`, `PEXELS_API_KEY`, `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`) under **Settings → Secrets and variables → Actions**. The workflow has `contents: write` and a `concurrency` group so a slow run never overlaps the next tick. Use the **Run workflow** button (`workflow_dispatch`) to trigger a one-off run.
+
+> **Why not a Vercel cron?** Vercel's Hobby (free) plan caps cron jobs at **once per day**, so an hourly tick there would be rejected or throttled. To stay at $0, scheduling lives in GitHub Actions. On Vercel **Pro** you can instead add an hourly entry back into `vercel.json` (`{ "path": "/api/cron/generate", "schedule": "0 * * * *" }`) — the route already handles `Authorization: Bearer $CRON_SECRET`. Don't run both at once or you'll generate twice an hour.
+
+### Hosting — Vercel (easiest)
 
 1. Push this repo to GitHub.
 2. Import the repo into Vercel.
 3. Add every env var from `.env.local` to the Vercel project.
-4. `vercel.json` already declares a daily cron at **12:00 UTC** (7am ET during DST, 8am ET in standard time). Adjust the schedule in `vercel.json` if you want a different tick.
-5. Vercel's cron automatically sends `Authorization: Bearer $CRON_SECRET` — the route checks for it.
 
-That's it. The next cron tick will generate a post, commit it via the GitHub API, and trigger a redeploy.
+Vercel auto-deploys on every push, so each hourly commit from the Action redeploys the site. That's it.
 
-### Option B — Cloudflare Pages (zero-cost route)
+### Hosting — Cloudflare Pages (zero-cost route)
 
-Cloudflare Pages Functions have a **~30s CPU limit per request**, and this pipeline typically runs 30–90s end-to-end. Two paths:
+Deploy the Next.js blog to Pages purely as the static host — it's free and fast, and it redeploys on each push from the Action. Pages Functions have a **~30s CPU limit per request** and this pipeline runs 30–90s end-to-end, so don't try to run the pipeline inside a Pages Function; let the GitHub Action do the generation.
 
-**B1 — Recommended.** Deploy the Next.js blog to Pages for hosting, but move the cron to a **Cloudflare Workers Cron Trigger** (separate service, 15-min CPU budget on the paid Workers plan; 30s on free). Create a Worker that imports and calls `runPipeline()` from `src/lib/orchestrator/pipeline.ts`. The blog repo stays the same; only the scheduler moves.
+### Self-host
 
-**B2 — Scheduled GitHub Action.** Add a workflow that runs `pnpm tsx scripts/run-local.ts` on cron, commits the output, and pushes. No serverless CPU limits, and you get free logs. This is the most forgiving option.
-
-Either way, keep Pages as the static host — it's free and fast.
-
-### Option C — Self-host
-
-`pnpm build && pnpm start` and point a reverse proxy at port 3000. Trigger the cron route with `curl`:
+`pnpm build && pnpm start` and point a reverse proxy at port 3000. The GitHub Action still drives generation; to trigger a run by hand, hit the route with `curl`:
 
 ```bash
 curl -H "Authorization: Bearer $CRON_SECRET" https://your-domain/api/cron/generate
@@ -158,7 +158,7 @@ Dedup uses a sorted-token fingerprint of the title, so "GPT-5 released today" an
 
 **"no research content scrapable"** — the winner's URL and all three Brave results failed to scrape (timeouts, 403s, JS-only pages). The pipeline skips gracefully; try again next tick.
 
-**Groq rate limit** — the free tier resets every minute. Should never hit it with one post/day, but if you're iterating, just wait.
+**Groq rate limit** — the free tier resets every minute. One post/hour stays comfortably under the limit, but if you're iterating locally, just wait a minute.
 
 **Cloudflare Pages timeouts** — see Option B above. Pages Functions can't run this pipeline end-to-end.
 
@@ -169,7 +169,7 @@ Dedup uses a sorted-token fingerprint of the title, so "GPT-5 released today" an
 - **Add a source:** drop a new file in `src/lib/sources/`, export a function returning `RawItem[]`, and add it to the `Promise.all` in `pipeline.ts`.
 - **Tune the tone:** edit `SYSTEM_PROMPT` in `generate.ts`. The zod schema will catch anything structurally broken.
 - **Change the niche:** adjust `SUBREDDITS` in `reddit.ts`, `BRAVE_QUERIES` in `bravenews.ts`, and `DEFAULT_FEEDS` in `rss.ts`.
-- **Multiple posts per day:** call `runPipeline()` in a loop with different category filters, or run the cron multiple times.
+- **Change the cadence:** edit the `cron` in `.github/workflows/generate.yml` (e.g. `0 */2 * * *` for every two hours, `0 12 * * *` for daily). For multiple posts per tick, call `runPipeline()` in a loop with different category filters.
 
 ---
 

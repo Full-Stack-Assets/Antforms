@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     default: 'Wire and Logic',
     template: '%s — Wire and Logic',
   },
-  description: 'A daily trend brief for builders, synthesized from across the web.',
+  description: 'An hourly trend brief for builders, synthesized from across the web.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -35,7 +35,7 @@ function Header() {
             Wire and <span className="text-accent">Logic</span>
           </div>
           <div className="mt-1 text-[10px] uppercase tracking-[0.2em] text-muted">
-            Daily · Synthesized · Opinionated
+            Hourly · Synthesized · Opinionated
           </div>
         </Link>
         <nav className="hidden sm:flex items-center gap-6 text-sm font-medium">
@@ -61,7 +61,7 @@ function Footer() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <span className="font-display text-base font-semibold text-ink">Wire and Logic</span>
-            {' '}— one post a day, generated from what's trending.
+            {' '}— a new post every hour, generated from what's trending.
           </div>
           <div className="text-xs uppercase tracking-widest">
             © {new Date().getFullYear()} — No humans were harmed in the making of this blog.
